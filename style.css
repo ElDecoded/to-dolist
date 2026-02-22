@@ -1,97 +1,63 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: linear-gradient(135deg, #e0e7ff, #fce7f3);
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  padding: 40px;
   margin: 0;
-  transition: 0.3s;
 }
 
 .dark {
   background: #111827;
+  color: white;
 }
 
 .container {
-  background: white;
-  padding: 25px;
-  width: 380px;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-  transition: 0.3s;
-}
-
-.dark .container {
-  background: #1f2937;
-  color: white;
+  width: 500px;
 }
 
 h1 {
   text-align: center;
+}
+
+.goal {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.dark .goal {
+  background: #1f2937;
+}
+
+.goal-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.progress {
+  font-size: 14px;
   margin-bottom: 10px;
 }
 
-.progress-text {
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.input-area {
-  display: flex;
-  gap: 10px;
-}
-
-input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-weight: bold;
-}
-
-button {
-  padding: 10px 15px;
-  border-radius: 10px;
-  border: none;
-  background: #c4b5fd;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 15px;
-}
-
-li {
-  background: #eef2ff;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+.task {
   display: flex;
   align-items: center;
   gap: 10px;
-  animation: fadeIn 0.3s ease forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  margin-top: 8px;
 }
 
 .checkbox {
   width: 18px;
   height: 18px;
-  border: 2px solid #8b5cf6;
-  border-radius: 4px;
+  border: 2px solid purple;
   cursor: pointer;
 }
 
 .checkbox.checked {
-  background: #8b5cf6;
+  background: purple;
 }
 
 .task-text.completed {
@@ -99,14 +65,17 @@ li {
   opacity: 0.6;
 }
 
+.delete-btn {
+  margin-left: auto;
+  cursor: pointer;
+  color: red;
+}
+
 .dark-toggle {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #8b5cf6;
-  color: white;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  font-size: 18px;
 }
