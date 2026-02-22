@@ -1,93 +1,73 @@
-const goalInput = document.getElementById("goalInput");
-const addGoalBtn = document.getElementById("addGoalBtn");
 const taskInput = document.getElementById("taskInput");
-const addTaskBtn = document.getElementById("addTaskBtn");
-const goalSelect = document.getElementById("goalSelect");
-const goalsContainer = document.getElementById("goalsContainer");
+const addBtn = document.getElementById("addBtn");
+const taskList = document.getElementById("taskList");
+const progressText = document.getElementById("progressText");
 const darkToggle = document.getElementById("darkToggle");
 
-let goals = JSON.parse(localStorage.getItem("goals")) || [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-renderGoals();
+renderTasks();
 
-addGoalBtn.onclick = function() {
-  const text = goalInput.value.trim();
+addBtn.onclick = addTask;
+
+taskInput.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") addTask();
+});
+
+function addTask() {
+  const text = taskInput.value.trim();
   if (!text) return;
 
-  goals.push({ title: text, tasks: [] });
-  goalInput.value = "";
-  saveAndRender();
-};
-
-addTaskBtn.onclick = function() {
-  const text = taskInput.value.trim();
-  const goalIndex = goalSelect.value;
-
-  if (!text || goalIndex === "") return;
-
-  goals[goalIndex].tasks.push({ text, completed: false });
+  tasks.push({ text: text, completed: false });
   taskInput.value = "";
   saveAndRender();
-};
+}
 
-function renderGoals() {
-  goalsContainer.innerHTML = "";
-  goalSelect.innerHTML = "<option value=''>Select Goal</option>";
+function renderTasks() {
+  taskList.innerHTML = "";
 
-  goals.forEach((goal, index) => {
-    goalSelect.innerHTML += `<option value="${index}">${goal.title}</option>`;
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
 
-    const goalDiv = document.createElement("div");
-    goalDiv.classList.add("goal");
+    const checkbox = document.createElement("div");
+    checkbox.classList.add("checkbox");
+    if (task.completed) checkbox.classList.add("checked");
 
-    const completedCount = goal.tasks.filter(t => t.completed).length;
+    checkbox.onclick = function() {
+      tasks[index].completed = !tasks[index].completed;
+      saveAndRender();
+    };
 
-    goalDiv.innerHTML = `
-      <div class="goal-title">${goal.title}</div>
-      <div class="progress">${completedCount} / ${goal.tasks.length} Completed</div>
-    `;
+    const span = document.createElement("span");
+    span.textContent = task.text;
+    if (task.completed) span.classList.add("completed");
 
-    goal.tasks.forEach((task, taskIndex) => {
-      const taskDiv = document.createElement("div");
-      taskDiv.classList.add("task");
+    const deleteBtn = document.createElement("span");
+    deleteBtn.textContent = "✕";
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.onclick = function() {
+      tasks.splice(index, 1);
+      saveAndRender();
+    };
 
-      const checkbox = document.createElement("div");
-      checkbox.classList.add("checkbox");
-      if (task.completed) checkbox.classList.add("checked");
+    li.appendChild(checkbox);
+    li.appendChild(span);
+    li.appendChild(deleteBtn);
 
-      const span = document.createElement("span");
-      span.textContent = task.text;
-      span.classList.add("task-text");
-      if (task.completed) span.classList.add("completed");
-
-      checkbox.onclick = function() {
-        goals[index].tasks[taskIndex].completed = 
-          !goals[index].tasks[taskIndex].completed;
-        saveAndRender();
-      };
-
-      const deleteBtn = document.createElement("span");
-      deleteBtn.textContent = "✕";
-      deleteBtn.classList.add("delete-btn");
-      deleteBtn.onclick = function() {
-        goals[index].tasks.splice(taskIndex, 1);
-        saveAndRender();
-      };
-
-      taskDiv.appendChild(checkbox);
-      taskDiv.appendChild(span);
-      taskDiv.appendChild(deleteBtn);
-
-      goalDiv.appendChild(taskDiv);
-    });
-
-    goalsContainer.appendChild(goalDiv);
+    taskList.appendChild(li);
   });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const completed = tasks.filter(t => t.completed).length;
+  progressText.textContent = `${completed} / ${tasks.length} Completed`;
 }
 
 function saveAndRender() {
-  localStorage.setItem("goals", JSON.stringify(goals));
-  renderGoals();
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  renderTasks();
 }
 
 darkToggle.onclick = function() {
