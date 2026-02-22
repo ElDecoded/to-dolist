@@ -1,6 +1,8 @@
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #e0e7ff, #fdf4ff);
+  background: linear-gradient(-45deg, #dbeafe, #f5d0fe, #e0f2fe, #fce7f3);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,13 +10,19 @@ body {
   margin: 0;
 }
 
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .container {
   background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   padding: 30px;
   width: 350px;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
 h1 {
@@ -30,18 +38,23 @@ h1 {
 input {
   flex: 1;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid #ccc;
   font-weight: bold;
 }
 
 button {
   padding: 10px 15px;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
-  background-color: #c7d2ff;
+  background: #c4b5fd;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
 }
 
 ul {
@@ -51,17 +64,33 @@ ul {
 }
 
 li {
-  background: #eef1ff;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  background: #eef2ff;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
   font-weight: bold;
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 0.3s forwards;
+  transition: 0.3s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 li.completed {
   text-decoration: line-through;
   opacity: 0.6;
+}
+
+.delete-btn {
+  cursor: pointer;
+  margin-left: 10px;
 }
