@@ -9,20 +9,18 @@
 
 <div class="container">
 
-  <h1>To-Do List</h1>
+  <h1 id="goalTitle">My Goal</h1>
 
-  <div class="goal-creator">
-    <input type="text" id="goalInput" placeholder="Create New Goal">
-    <button id="addGoalBtn">Add Goal</button>
+  <div class="progress">
+    <span id="progressText">0 / 0 Completed</span>
   </div>
 
-  <div class="task-creator">
-    <input type="text" id="taskInput" placeholder="Add Task">
-    <select id="goalSelect"></select>
-    <button id="addTaskBtn">Add Task</button>
+  <div class="input-area">
+    <input type="text" id="taskInput" placeholder="Add a task">
+    <button id="addBtn">Add</button>
   </div>
 
-  <div id="goalsContainer"></div>
+  <ul id="taskList"></ul>
 
 </div>
 
