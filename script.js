@@ -1,79 +1,95 @@
+const goalInput = document.getElementById("goalInput");
+const addGoalBtn = document.getElementById("addGoalBtn");
 const taskInput = document.getElementById("taskInput");
-const taskList = document.getElementById("taskList");
-const progressCount = document.getElementById("progressCount");
-const addBtn = document.getElementById("addBtn");
+const addTaskBtn = document.getElementById("addTaskBtn");
+const goalSelect = document.getElementById("goalSelect");
+const goalsContainer = document.getElementById("goalsContainer");
 const darkToggle = document.getElementById("darkToggle");
 
-addBtn.onclick = addTask;
+let goals = JSON.parse(localStorage.getItem("goals")) || [];
 
-taskInput.addEventListener("keypress", function(e) {
-  if (e.key === "Enter") addTask();
-});
+renderGoals();
 
-window.onload = function() {
-  const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  savedTasks.forEach(task => createTask(task.text, task.completed));
+addGoalBtn.onclick = function() {
+  const text = goalInput.value.trim();
+  if (!text) return;
 
-  if (localStorage.getItem("darkMode") === "true") {
-    document.body.classList.add("dark");
-  }
-
-  updateProgress();
+  goals.push({ title: text, tasks: [] });
+  goalInput.value = "";
+  saveAndRender();
 };
 
-function addTask() {
+addTaskBtn.onclick = function() {
   const text = taskInput.value.trim();
-  if (text === "") return;
+  const goalIndex = goalSelect.value;
 
-  createTask(text, false);
-  saveTasks();
-  updateProgress();
+  if (!text || goalIndex === "") return;
+
+  goals[goalIndex].tasks.push({ text, completed: false });
   taskInput.value = "";
-}
+  saveAndRender();
+};
 
-function createTask(text, completed) {
-  const li = document.createElement("li");
+function renderGoals() {
+  goalsContainer.innerHTML = "";
+  goalSelect.innerHTML = "<option value=''>Select Goal</option>";
 
-  const checkbox = document.createElement("div");
-  checkbox.classList.add("checkbox");
-  if (completed) checkbox.classList.add("checked");
+  goals.forEach((goal, index) => {
+    goalSelect.innerHTML += `<option value="${index}">${goal.title}</option>`;
 
-  const span = document.createElement("span");
-  span.textContent = text;
-  span.classList.add("task-text");
-  if (completed) span.classList.add("completed");
+    const goalDiv = document.createElement("div");
+    goalDiv.classList.add("goal");
 
-  checkbox.onclick = function() {
-    checkbox.classList.toggle("checked");
-    span.classList.toggle("completed");
-    saveTasks();
-    updateProgress();
-  };
+    const completedCount = goal.tasks.filter(t => t.completed).length;
 
-  li.appendChild(checkbox);
-  li.appendChild(span);
-  taskList.appendChild(li);
-}
+    goalDiv.innerHTML = `
+      <div class="goal-title">${goal.title}</div>
+      <div class="progress">${completedCount} / ${goal.tasks.length} Completed</div>
+    `;
 
-function saveTasks() {
-  const tasks = [];
-  document.querySelectorAll("#taskList li").forEach(li => {
-    tasks.push({
-      text: li.querySelector(".task-text").textContent,
-      completed: li.querySelector(".checkbox").classList.contains("checked")
+    goal.tasks.forEach((task, taskIndex) => {
+      const taskDiv = document.createElement("div");
+      taskDiv.classList.add("task");
+
+      const checkbox = document.createElement("div");
+      checkbox.classList.add("checkbox");
+      if (task.completed) checkbox.classList.add("checked");
+
+      const span = document.createElement("span");
+      span.textContent = task.text;
+      span.classList.add("task-text");
+      if (task.completed) span.classList.add("completed");
+
+      checkbox.onclick = function() {
+        goals[index].tasks[taskIndex].completed = 
+          !goals[index].tasks[taskIndex].completed;
+        saveAndRender();
+      };
+
+      const deleteBtn = document.createElement("span");
+      deleteBtn.textContent = "✕";
+      deleteBtn.classList.add("delete-btn");
+      deleteBtn.onclick = function() {
+        goals[index].tasks.splice(taskIndex, 1);
+        saveAndRender();
+      };
+
+      taskDiv.appendChild(checkbox);
+      taskDiv.appendChild(span);
+      taskDiv.appendChild(deleteBtn);
+
+      goalDiv.appendChild(taskDiv);
     });
+
+    goalsContainer.appendChild(goalDiv);
   });
-  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-function updateProgress() {
-  const tasks = document.querySelectorAll("#taskList li");
-  const completed = document.querySelectorAll(".checkbox.checked");
-
-  progressCount.textContent = `${completed.length} / ${tasks.length} Completed`;
+function saveAndRender() {
+  localStorage.setItem("goals", JSON.stringify(goals));
+  renderGoals();
 }
 
 darkToggle.onclick = function() {
   document.body.classList.toggle("dark");
-  localStorage.setItem("darkMode", document.body.classList.contains("dark"));
 };
