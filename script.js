@@ -1,14 +1,15 @@
 const taskInput = document.getElementById("taskInput");
 const taskList = document.getElementById("taskList");
-const progressBar = document.querySelector(".progress");
+const progressCount = document.getElementById("progressCount");
+const addBtn = document.getElementById("addBtn");
 const darkToggle = document.getElementById("darkToggle");
 
-// ENTER KEY
+addBtn.onclick = addTask;
+
 taskInput.addEventListener("keypress", function(e) {
   if (e.key === "Enter") addTask();
 });
 
-// LOAD SAVED DATA
 window.onload = function() {
   const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
   savedTasks.forEach(task => createTask(task.text, task.completed));
@@ -16,6 +17,8 @@ window.onload = function() {
   if (localStorage.getItem("darkMode") === "true") {
     document.body.classList.add("dark");
   }
+
+  updateProgress();
 };
 
 function addTask() {
@@ -66,11 +69,10 @@ function saveTasks() {
 function updateProgress() {
   const tasks = document.querySelectorAll("#taskList li");
   const completed = document.querySelectorAll(".checkbox.checked");
-  const percent = tasks.length === 0 ? 0 : (completed.length / tasks.length) * 100;
-  progressBar.style.width = percent + "%";
+
+  progressCount.textContent = `${completed.length} / ${tasks.length} Completed`;
 }
 
-// DARK MODE
 darkToggle.onclick = function() {
   document.body.classList.toggle("dark");
   localStorage.setItem("darkMode", document.body.classList.contains("dark"));
